@@ -18,7 +18,7 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'description', 'parent')
 
 class TransactionAdmin(admin.ModelAdmin):
-    list_display = ('description', 'account', 'amount', 'date', 'notes', 'transfer', 'reconciled')
+    list_display = ('description', 'account', 'amount', 'date', 'notes', 'transfer_account', 'reconciled')
 
 admin_site = MyAdminSite(name='myadmin')
 admin_site.register(ExternalAccount, ExternalAccountAdmin)

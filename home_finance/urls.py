@@ -14,9 +14,9 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from home_finance.admin import admin_site
-from django.conf.urls import include, url
+from django.urls import include, re_path
 
 urlpatterns = [
-    url('external-accounts/', include('home_finance.components.external_account.urls')),
-    url('admin/', admin_site.urls),
+    re_path('external-accounts/', include('home_finance.components.external_account.urls')),
+    re_path('admin/', admin_site.urls),
 ]

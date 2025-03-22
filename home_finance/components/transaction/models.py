@@ -81,8 +81,9 @@ def next_number(from_account: external_account.ExternalAccount):
     """
     Find the next suggested number to use for the provided account.
     """
-    highest_num = sorted(Transaction.objects.filter(account=from_account, num__regex=r'^[0123456789]+$').all(), key=lambda o: int(o.num))[-1]
-    if highest_num:
+    all_acct_trans_with_num = Transaction.objects.filter(account=from_account, num__regex=r'^[0123456789]+$').all()
+    if all_acct_trans_with_num:
+        highest_num = sorted(all_acct_trans_with_num, key=lambda o: int(o.num))[-1]
         try:
             last_number = int(highest_num.num)
             return f'{last_number + 1}'
@@ -129,12 +130,17 @@ def createTransaction(to_account: external_account.ExternalAccount, data: dict):
                        parent=None,
                        account=to_account,
                        description=desc,
-                       date=datetime.datetime.strptime(f'{data["date"]}-12:00-+0800', '%Y-%m-%d-%H:%M-%z'),
+                       date=date_from_string(data['date']),
                        num=data.get('num'),
                        notes=data.get('memo'),
                        reconciled=cleared,
                        category=cat,
                        transfer_account=acct)
+
+
+def date_from_string(date_string: str):
+    """Obtain a datetime from an input string with a consistent timezone."""
+    return datetime.datetime.strptime(f'{date_string}-12:00-+0800', '%Y-%m-%d-%H:%M-%z')
 
 
 def transaction_from_template(txn: Transaction, data: dict):
@@ -143,11 +149,12 @@ def transaction_from_template(txn: Transaction, data: dict):
                        parent=None,
                        account=txn.account,
                        description=txn.description,
-                       date=datetime.datetime.strptime(f'{data["date"]}-12:00-+0800', '%Y-%m-%d-%H:%M-%z'),
+                       date=date_from_string(data["date"]),
                        num=data.get('num'),
                        notes=txn.notes,
                        reconciled=True,
-                       category=txn.category)
+                       category=txn.category,
+                       transfer_account=txn.transfer_account)
 
 
 def _getUnique(cls, name: str):
