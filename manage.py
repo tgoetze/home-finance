@@ -4,6 +4,9 @@ import sys
 
 if __name__ == "__main__":
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "home_finance.settings")
+    # the following line is only here so that we can use jupyter notebooks, it should not be a production setting
+    # since it could have data corruption issues if used concurrently
+    os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
     try:
         from django.core.management import execute_from_command_line
     except ImportError:
